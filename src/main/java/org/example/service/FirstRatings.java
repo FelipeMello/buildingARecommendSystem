@@ -1,10 +1,12 @@
-package org.example.models;
+package org.example.service;
 
 
 import edu.duke.FileResource;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.example.models.EfficientRater;
+import org.example.models.Movie;
 
 import java.io.File;
 import java.io.IOException;

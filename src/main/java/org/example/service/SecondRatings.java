@@ -1,4 +1,8 @@
-package org.example.models;
+package org.example.service;
+
+import org.example.models.Movie;
+import org.example.models.Rater;
+import org.example.service.FirstRatings;
 
 import java.io.IOException;
 import java.util.List;

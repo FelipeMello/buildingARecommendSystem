@@ -1,5 +1,8 @@
-package org.example.models;
+package org.example.service;
 
+import org.example.models.EfficientRater;
+import org.example.models.Movie;
+import org.example.service.FirstRatings;
 import org.junit.Test;
 
 import java.io.IOException;
