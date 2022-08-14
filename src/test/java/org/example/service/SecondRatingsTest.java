@@ -34,8 +34,20 @@ class SecondRatingsTest extends TestCase {
 
     @Test
     void getAverageRatings(){
-        List<Rating> ratings = secondRatings.getAverageRatings(10);
+        List<Rating> ratings = secondRatings.getMoviesByMinimalRaters(10);
         assertThat(ratings.size(), is(3));
 
+
+    }
+    @Test
+    void getAverageRatingById(){
+        double ratings = secondRatings.getAverageByID("0068646", 7);
+        assertThat(ratings, is(9.0));
+        ratings = secondRatings.getAverageByID("0068646", 9);
+        assertThat(ratings, is(9.333333333333334));
+        ratings = secondRatings.getAverageByID("0068646", 10);
+        assertThat(ratings, is(10.0));
+        ratings = secondRatings.getAverageByID("0068646", 11);
+        assertThat(ratings, is(0.0));
     }
 }
