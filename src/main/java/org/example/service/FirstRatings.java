@@ -26,7 +26,6 @@ public class FirstRatings {
         }
         return movies;
     }
-
     public List<EfficientRater> loadRaters(String filename) {
         FileResource fr = new FileResource(filename);
         List<EfficientRater> raters = new ArrayList<>();
@@ -53,7 +52,6 @@ public class FirstRatings {
         }
         return raters;
     }
-
     public int getNumRatingsByRaterById(List<EfficientRater> efficientRaters, String raterId) {
         int numRatings = 0;
         for (EfficientRater efficientRater : efficientRaters) {
@@ -63,11 +61,9 @@ public class FirstRatings {
         }
         return numRatings;
     }
-
     public Integer getTotalRatingByMovieId(List<EfficientRater> efficientRaters, String movieId) {
         return (int) efficientRaters.stream().filter(efficientRater -> efficientRater.getItemsRated().contains(movieId)).count();
     }
-
     public List<Movie> getMoviesByGenre(List<Movie> movies, String genre) {
         List<Movie> moviesByGenre = new ArrayList<>();
         movies.forEach(movie -> {
@@ -77,14 +73,9 @@ public class FirstRatings {
         });
         return moviesByGenre;
     }
-
     private boolean skipHeader(CSVRecord csvRecord) {
-        if (csvRecord.getRecordNumber() == 1) {
-            return true;
-        }
-        return false;
+        return csvRecord.getRecordNumber() == 1;
     }
-
     public List<Movie> getMoviesByMinutes(List<Movie> movies, Integer minutes) {
         List<Movie> moviesByMinutes = new ArrayList<>();
         movies.forEach(movie -> {
@@ -94,12 +85,6 @@ public class FirstRatings {
         });
         return moviesByMinutes;
     }
-
-    /**
-     * @param filename
-     * @return
-     * @throws IOException
-     */
     public Map<String, Integer> getDirectorsFromMovies(List<Movie> movies) {
         Map<String, Integer> directors = new HashMap<>();
         movies.forEach(movie -> {
@@ -112,7 +97,6 @@ public class FirstRatings {
         });
         return directors;
     }
-
     public Map<String, Integer> getTopDirector(Map<String, Integer> directors) {
         int max = 0;
         String directorName = null;
@@ -126,7 +110,6 @@ public class FirstRatings {
         director.put(directorName, max);
         return director;
     }
-
     public Movie buildMovie(CSVRecord csvRecord) {
         return new Movie(
                 csvRecord.get(0).trim(),
@@ -138,13 +121,11 @@ public class FirstRatings {
                 csvRecord.get(7).trim(),
                 Integer.parseInt(csvRecord.get(6)));
     }
-
     private List<CSVRecord> getCsvRecords(String filename) throws IOException {
         CSVParser parser = CSVParser.parse(new File(filename),
                 StandardCharsets.UTF_8, CSVFormat.DEFAULT);
         return parser.getRecords();
     }
-
     public EfficientRater getMaxNumberOfRatings(List<EfficientRater> raters) {
         int max = 0;
         String raterId = null;
@@ -157,7 +138,6 @@ public class FirstRatings {
         return getRaterById(raters, raterId);
 
     }
-
     public EfficientRater getRaterById(List<EfficientRater> efficientRaters, String raterId) {
         for (EfficientRater efficientRater : efficientRaters) {
             if (efficientRater.getID().equals(raterId)) {
@@ -166,16 +146,13 @@ public class FirstRatings {
         }
         return null;
     }
-
     public Integer getTotalNumberOfMoviesRated(List<EfficientRater> efficientRaters) {
         List<String> ratedMovies = new ArrayList<>();
-        efficientRaters.forEach(efficientRater -> {
-            efficientRater.getItemsRated().forEach(itemRated -> {
-                if (!ratedMovies.contains(itemRated)) {
-                    ratedMovies.add(itemRated);
-                }
-            });
-        });
+        efficientRaters.forEach(efficientRater -> efficientRater.getItemsRated().forEach(itemRated -> {
+            if (!ratedMovies.contains(itemRated)) {
+                ratedMovies.add(itemRated);
+            }
+        }));
         return ratedMovies.size();
     }
 }
