@@ -15,72 +15,69 @@ public class FirstRatingsTest {
 
     FirstRatings firstRatings = new FirstRatings();
 
+    private static final String ratingsShortCsv = "src/main/resources/data/ratings_short.csv";
+
+    private static final String ratingsCsv = "src/main/resources/data/ratings.csv";
+    private static final String ratedMoviesFullCsv = "src/main/resources/data/ratedmoviesfull.csv";
+
+    private static final String ratedMoviesShortCsv = "src/main/resources/data/ratedmovies_short.csv";
+
     @Test
     public void testLoadMovies() throws IOException {
-        List<Movie> movies = firstRatings.loadMovies("src/main/resources/data/ratedmovies_short.csv");
+        List<Movie> movies = firstRatings.loadMovies(ratedMoviesShortCsv);
         assertThat(movies.size(), is(5));
         assertThat(movies.get(0).getID(), is("0006414"));
 
-        movies = firstRatings.loadMovies("src/main/resources/data/ratedmoviesfull.csv");
+        movies = firstRatings.loadMovies(ratedMoviesFullCsv);
         assertThat(movies.size(), is(3143));
     }
 
     @Test
-    public void testGetMoviesByMinutesShort() throws IOException {
-
-    }
-
-    @Test
     public void testGetDirectorsFromMovies() throws IOException {
+        List<Movie> movies = firstRatings.loadMovies(ratedMoviesShortCsv);
         Map<String, Integer> directors =
-                firstRatings.getDirectorsFromMovies(
-                        "src/main/resources/data/ratedmovies_short.csv");
+                firstRatings.getDirectorsFromMovies(movies);
         assertThat(directors.size(), is(5));
 
-        directors = firstRatings.getDirectorsFromMovies(
-                "src/main/resources/data/ratedmoviesfull.csv");
+        movies = firstRatings.loadMovies(ratedMoviesFullCsv);
+        directors = firstRatings.getDirectorsFromMovies(movies);
         assertThat(directors.size(), is(1905));
     }
 
     @Test
-    public void testLoadRaters() throws IOException {
+    public void testLoadRaters() {
         List<EfficientRater> raters = firstRatings.loadRaters(
-                "src/main/resources/data/ratings_short.csv");
+                ratingsShortCsv);
         assertThat(raters.size(), is(5));
 
         List<EfficientRater> ratersBiggerFile = firstRatings.loadRaters(
-                "src/main/resources/data/ratings.csv");
+                ratingsCsv);
         assertThat(ratersBiggerFile.size(), is(1048));
     }
 
-    //https://github.com/abhishekrana8651/StepOne-Recommedation-System-/blob/f00a68d5caa5afb88add510aff3eedb68d970ee1/FirstRatings.java
     @Test
     public void testFindMaxNumberOfRaterByRater() throws IOException {
-        Integer movieRatings = firstRatings.getTotalRatingsByMovieId(
-                "src/main/resources/data/ratings_short.csv", "1798709");
+        List<EfficientRater> efficientRaters = firstRatings.loadRaters(ratingsShortCsv);
+        Integer movieRatings = firstRatings.getTotalRatingByMovieId(
+                efficientRaters, "1798709");
         assertThat(movieRatings, is(4));
     }
 
     @Test
-    public void testGetNumRatingsByRaterById() throws IOException {
-        List<EfficientRater> efficientRaters = firstRatings.loadRaters("src/main/resources/data/ratings_short.csv");
-        int numRatingByRaterId = firstRatings.getNumRatingsByRaterById(efficientRaters, "2");
-        assertThat(numRatingByRaterId, is(3));
-    }
-
-    @Test
-    public void testGetMaxNumberOfRatings() throws IOException {
-        EfficientRater efficientRater = firstRatings.getMaxNumberOfRatings("src/main/resources/data/ratings_short.csv");
+    public void testGetMaxNumberOfRatings() {
+        List<EfficientRater> efficientRaters = firstRatings.loadRaters(ratingsShortCsv);
+        EfficientRater efficientRater = firstRatings.getMaxNumberOfRatings(efficientRaters);
         assertThat(efficientRater.getID(), is("2"));
         assertThat(efficientRater.numRatings(), is(3));
 
     }
 
-//    @Test
-//    public void testGetMoviesRated() throws IOException {
-//        Integer moviesRated = firstRatings.getTotalNumberOfMoviesRated("src/main/resources/data/ratings_short.csv");
-//        assertThat(moviesRated, is(4));
-//    }
+    @Test
+    public void testGetTotalNumberOfMoviesRated() {
+        List<EfficientRater> efficientRaters = firstRatings.loadRaters(ratingsShortCsv);
+        Integer moviesRated = firstRatings.getTotalNumberOfMoviesRated(efficientRaters);
+        assertThat(moviesRated, is(4));
+    }
 
     /**
      * Question 2
@@ -92,11 +89,11 @@ public class FirstRatingsTest {
      */
     @Test
     public void testGetMoviesByGenre() throws IOException {
-        List<Movie> movies = firstRatings.loadMovies("src/main/resources/data/ratedmovies_short.csv");
+        List<Movie> movies = firstRatings.loadMovies(ratedMoviesShortCsv);
         List<Movie> comedyMovies = firstRatings.getMoviesByGenre(movies, "Comedy");
         assertThat(comedyMovies.size(), is(1));
 
-        movies = firstRatings.loadMovies("src/main/resources/data/ratedmoviesfull.csv");
+        movies = firstRatings.loadMovies(ratedMoviesFullCsv);
         comedyMovies = firstRatings.getMoviesByGenre(movies, "Comedy");
         assertThat(comedyMovies.size(), is(960));
     }
@@ -109,25 +106,13 @@ public class FirstRatingsTest {
      */
     @Test
     public void testGetMoviesByMinutes() throws IOException {
-        List<Movie> movies = firstRatings.loadMovies("src/main/resources/data/ratedmoviesfull.csv");
+        List<Movie> movies = firstRatings.loadMovies(ratedMoviesFullCsv);
         List<Movie> moviesByMinutes = firstRatings.getMoviesByMinutes(movies, 150);
         assertThat(moviesByMinutes.size(), is(132));
 
-        movies = firstRatings.loadMovies("src/main/resources/data/ratedmovies_short.csv");
+        movies = firstRatings.loadMovies(ratedMoviesShortCsv);
         moviesByMinutes = firstRatings.getMoviesByMinutes(movies, 150);
         assertThat(moviesByMinutes.size(), is(2));
-    }
-
-    /**
-     * Question 4
-     * In the class FirstRatings, run the method testLoadMovies on the file ratedmoviesfull.csv. Note there are 3143 movies in this file.
-     * <p>
-     * What is the maximum number of films directed by one director?
-     */
-    @Test
-    public void testGetMoviesByDirectors() throws IOException {
-
-
     }
 
     /**
@@ -145,11 +130,11 @@ public class FirstRatingsTest {
      */
     @Test
     public void testGetTopDirector() throws IOException {
-        Map<String, Integer> directors =
-                firstRatings.getTopDirector(
-                        "src/main/resources/data/ratedmoviesfull.csv");
-        assertThat(directors.size(), is(1));
-        assertThat(directors.get("Woody Allen"), is(23));
+        List<Movie> movies = firstRatings.loadMovies(ratedMoviesFullCsv);
+        Map<String, Integer> directors = firstRatings.getDirectorsFromMovies(movies);
+        Map<String, Integer> director = firstRatings.getTopDirector(directors);
+        assertThat(director.size(), is(1));
+        assertThat(director.get("Woody Allen"), is(23));
     }
 
     /**
@@ -161,44 +146,28 @@ public class FirstRatingsTest {
      * @throws IOException
      */
     @Test
-    public void testgetTotalRatingByMovieId() throws IOException {
-        List<EfficientRater> totalRatingByMovieId = firstRatings.loadRaters(
-                "src/main/resources/data/ratings.csv");
-        assertThat(totalRatingByMovieId.get(192).getItemsRated().size(), is(119));
+    public void testGetNumRatingsByRaterById() {
+        List<EfficientRater> efficientRaters = firstRatings.loadRaters(
+                ratingsCsv);
+        int numRatersByRaterId = firstRatings.getNumRatingsByRaterById(efficientRaters, "193");
+        assertThat(numRatersByRaterId, is(119));
+        numRatersByRaterId = firstRatings.getNumRatingsByRaterById(efficientRaters, "735");
+        assertThat(numRatersByRaterId, is(314));
+
+        efficientRaters = firstRatings.loadRaters(ratingsShortCsv);
+        numRatersByRaterId = firstRatings.getNumRatingsByRaterById(efficientRaters, "2");
+        assertThat(numRatersByRaterId, is(3));
     }
 
-//    /**
-//     * Question 6
-//     * In the class FirstRatings, run the method testLoadRaters on the file ratings.csv. Note there are 1048 raters in this file.
-//     * <p>
-//     * How many ratings does the rater number 193 have?
-//     *
-//     * @throws IOException
-//     */
-//    @Test
-//    public void testgetTotalRatingByMovieIdZX() throws IOException {
-//        Rating maxRating = firstRatings.getMaxNumberOfRatingsByAnyRating("src/main/resources/data/ratings.csv");
-//        assertThat(maxRating.getItem(), is("314"));
-//        assertThat(maxRating.getValue(), is(735));
-//    }
-
     @Test
-    public void testXGetTotalRatingByMovieId() throws IOException {
-        Integer totalRatingByMovieId = firstRatings.getTotalRatingByMovieId(
-                "src/main/resources/data/ratings_short.csv", "1798709");
+    public void testXGetTotalRatingByMovieId() {
+        List<EfficientRater> movies = firstRatings.loadRaters(ratingsShortCsv);
+        Integer totalRatingByMovieId = firstRatings.getTotalRatingByMovieId(movies, "1798709");
         assertThat(totalRatingByMovieId, is(4));
 
-        totalRatingByMovieId = firstRatings.getTotalRatingByMovieId(
-                "src/main/resources/data/ratings.csv", "1798709");
+        movies = firstRatings.loadRaters(ratingsCsv);
+        totalRatingByMovieId = firstRatings.getTotalRatingByMovieId(movies, "1798709");
         assertThat(totalRatingByMovieId, is(38));
 
     }
-
-//    @Test
-//    public void testGGetMoviesRated() throws IOException {
-//        Integer moviesRated = firstRatings.getTotalNumberOfMoviesRated("src/main/resources/data/ratings.csv");
-//        assertThat(moviesRated, is(3143));
-//    }
-
-
 }

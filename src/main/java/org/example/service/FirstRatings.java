@@ -27,7 +27,7 @@ public class FirstRatings {
         return movies;
     }
 
-    public List<EfficientRater> loadRaters(String filename) throws IOException {
+    public List<EfficientRater> loadRaters(String filename) {
         FileResource fr = new FileResource(filename);
         List<EfficientRater> raters = new ArrayList<>();
         List<String> raterIDs = new ArrayList<>();
@@ -54,7 +54,7 @@ public class FirstRatings {
         return raters;
     }
 
-    public int getNumRatingsByRaterById(List<EfficientRater> efficientRaters, String raterId) throws IOException {
+    public int getNumRatingsByRaterById(List<EfficientRater> efficientRaters, String raterId) {
         int numRatings = 0;
         for (EfficientRater efficientRater : efficientRaters) {
             if (efficientRater.getID().equals(raterId)) {
@@ -64,32 +64,11 @@ public class FirstRatings {
         return numRatings;
     }
 
-    public Integer getTotalRatingByMovieId(String filename, String movieId) throws IOException {
-        List<EfficientRater> efficientRaters = loadRaters(filename);
+    public Integer getTotalRatingByMovieId(List<EfficientRater> efficientRaters, String movieId) {
         return (int) efficientRaters.stream().filter(efficientRater -> efficientRater.getItemsRated().contains(movieId)).count();
     }
 
-    public Integer getTotalRatingsByMovieId(String filename, String movieId) throws IOException {
-        List<EfficientRater> efficientRaters = loadRaters(filename);
-        ArrayList<String> moviesRated = new ArrayList<String>();
-        int numMovieRated = 0;
-        for (EfficientRater efficientRater : efficientRaters) {
-            for (String item : efficientRater.getItemsRated()) {
-                if (!moviesRated.contains(item)) {
-                    moviesRated.add(item);
-                    numMovieRated++;
-                }
-            }
-        }
-        return numMovieRated;
-    }
-
-    public Integer getTotalNumberOfRaters(String filename) throws IOException {
-
-        return loadRaters(filename).size();
-    }
-
-    public List<Movie> getMoviesByGenre(List<Movie> movies, String genre) throws IOException {
+    public List<Movie> getMoviesByGenre(List<Movie> movies, String genre) {
         List<Movie> moviesByGenre = new ArrayList<>();
         movies.forEach(movie -> {
             if (movie.getGenres().contains(genre)) {
@@ -117,13 +96,11 @@ public class FirstRatings {
     }
 
     /**
-     * TODO REFRACTOR THIS METHOD
      * @param filename
      * @return
      * @throws IOException
      */
-    public Map<String, Integer> getDirectorsFromMovies(String filename) throws IOException {
-        movies = loadMovies(filename);
+    public Map<String, Integer> getDirectorsFromMovies(List<Movie> movies) {
         Map<String, Integer> directors = new HashMap<>();
         movies.forEach(movie -> {
             String director = movie.getDirector();
@@ -136,14 +113,13 @@ public class FirstRatings {
         return directors;
     }
 
-    public Map<String, Integer> getTopDirector(String filename) throws IOException {
-        Map<String, Integer> directors = getDirectorsFromMovies(filename);
+    public Map<String, Integer> getTopDirector(Map<String, Integer> directors) {
         int max = 0;
         String directorName = null;
-        for (String director : directors.keySet()) {
-            if (max < directors.get(director).intValue()) {
-                max = directors.get(director).intValue();
-                directorName = director;
+        for (Map.Entry<String, Integer> director : directors.entrySet()) {
+            if (max < director.getValue()) {
+                max = director.getValue();
+                directorName = director.getKey();
             }
         }
         Map<String, Integer> director = new HashMap<>();
@@ -169,8 +145,7 @@ public class FirstRatings {
         return parser.getRecords();
     }
 
-    public EfficientRater getMaxNumberOfRatings(String filename) throws IOException {
-        List<EfficientRater> raters = loadRaters(filename);
+    public EfficientRater getMaxNumberOfRatings(List<EfficientRater> raters) {
         int max = 0;
         String raterId = null;
         for (EfficientRater efficientRater : raters) {
@@ -183,12 +158,24 @@ public class FirstRatings {
 
     }
 
-    public EfficientRater getRaterById(List<EfficientRater> efficientRaters, String raterId){
-        for(EfficientRater efficientRater: efficientRaters){
-            if(efficientRater.getID().equals(raterId)){
-                return  efficientRater;
+    public EfficientRater getRaterById(List<EfficientRater> efficientRaters, String raterId) {
+        for (EfficientRater efficientRater : efficientRaters) {
+            if (efficientRater.getID().equals(raterId)) {
+                return efficientRater;
             }
         }
         return null;
+    }
+
+    public Integer getTotalNumberOfMoviesRated(List<EfficientRater> efficientRaters) {
+        List<String> ratedMovies = new ArrayList<>();
+        efficientRaters.forEach(efficientRater -> {
+            efficientRater.getItemsRated().forEach(itemRated -> {
+                if (!ratedMovies.contains(itemRated)) {
+                    ratedMovies.add(itemRated);
+                }
+            });
+        });
+        return ratedMovies.size();
     }
 }
